@@ -1,16 +1,15 @@
 from fastapi import FastAPI
-from routes import user_routes import router as user_router
-from db import get_db   
+from routes.user_routes import router as user_router
 from sqlalchemy import create_engine
 import os
-from models import Base
+from db import Base, DATABASE_URL
 app = FastAPI() 
 
 app.include_router(user_router)
 # to create database
-if not os.path.exists("test.db"):
+if not os.path.exists("./test.db"):
     engine = create_engine(DATABASE_URL)
-    base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def read_root():
