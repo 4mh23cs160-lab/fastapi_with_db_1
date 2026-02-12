@@ -2,16 +2,31 @@ from fastapi import FastAPI
 from routes.user_routes import router as user_router
 from routes.ai_response_routes import router as ai_response_router
 from routes.email_routes import router as email_routes
+from routes.history_routes import router as history_routes
+from routes.attachment_routes import router as attachment_router
 from db import get_db,DATABASE_URL
 from sqlalchemy import create_engine
 import os
 from models import Base
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(user_router)
 app.include_router(ai_response_router)
 app.include_router(email_routes)
+app.include_router(history_routes)
+app.include_router(attachment_router)
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 #to create database
 
 engine=create_engine(DATABASE_URL)
